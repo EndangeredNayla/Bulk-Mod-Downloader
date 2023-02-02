@@ -48,16 +48,17 @@ def go_to_path(args, parser):
 
 def download_manifest(repo, slug):
     if repo == "MCArchive":
-        url = "https://mcarchive.net/api/v1/mods/by_slug/" + slug
+        fileUrl = "https://mcarchive.net/api/v1/mods/by_slug/" + slug
         headers = {
         'User-Agent': 'BulkModDownloader/1.0.0'
         }
     elif repo == "CurseForge":
-        url = "https://api.curse.tools/v1/cf/mods/" + slug + "/files"
+        fileUrl = "https://api.curse.tools/v1/cf/mods/" + slug + "/files"
+        baseUrl = "https://api.curse.tools/v1/cf/mods/" + slug
         headers = {
         }
     elif repo == "Modrinth":
-        url = "https://api.modrinth.com/v2/project/" + slug + "/version"
+        fileUrl = "https://api.modrinth.com/v2/project/" + slug + "/version"
         headers = {
         'User-Agent': 'BulkModDownloader/1.0.0'
         }
@@ -66,10 +67,14 @@ def download_manifest(repo, slug):
         sys.exit(1)
     
 
-    responce = requests.get(url, headers=headers)
-    json = responce.json()
+    fileResponce = requests.get(fileUrl, headers=headers)
+    fileJson = fileResponce.json()
+
+    baseResponce = requests.get(baseUrl, headers=headers)
+    baseJson = baseResponce.json()
+
     if repo == "MCArchive":
-        for modList in json["mod_versions"]:
+        for modList in fileJson["mod_versions"]:
             for modLink in modList["files"]:
                 try:
                     mod_content = requests.get(modLink["archive_url"]).content
@@ -91,11 +96,20 @@ def download_manifest(repo, slug):
                             pass
 
     elif repo == "CurseForge":
-        for modLink in json["data"]:
+        for modLink in fileJson["data"]:
             mod_content = requests.get(modLink["downloadUrl"]).content
-            with open(modLink['fileName'], 'wb') as f:
-                f.write(mod_content)
-                print('Downloaded: {}!'.format(modLink['fileName']))
+            if not os.path.isdir("files/" + baseJson['data']['name']):
+                os.makedirs("files/" + baseJson['data']['name'])
+            for versionBase in modLink["sortableGameVersions"]:
+                if not os.path.isdir("files/" + baseJson['data']['name'] + "/" + versionBase['gameVersion']):
+                    os.makedirs("files/" + baseJson['data']['name'] + "/" + versionBase['gameVersion'])
+                with open("files/" + baseJson['data']['name'] + "/" + versionBase['gameVersion'] + "/" + modLink['fileName'], 'wb') as f:
+                    f.write(mod_content)
+                    try:
+                        os.remove("files/" + baseJson['data']['name'] + "/" + modLink['fileName'])
+                    except:
+                        pass
+                    print('Downloaded: {}!'.format(modLink['fileName']))
 
     elif repo == "Modrinth":
         print("================= WARNING ===================")
@@ -104,7 +118,7 @@ def download_manifest(repo, slug):
         print("")
         time.sleep(2)
         for number in range(0,999999): # hack to get alsround modrinth API bug
-            for modLink in json[number]["files"]:
+            for modLink in fileJson[number]["files"]:
                 mod_content = requests.get(modLink["url"]).content
                 with open(modLink['filename'], 'wb') as f:
                     f.write(mod_content)

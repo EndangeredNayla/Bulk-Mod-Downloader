@@ -1,7 +1,7 @@
 # ============================================
 # Bulk Mod Downloader
 # Author: Nayla Hanegan (naylahanegan@gmail.com)
-# Date: 2/2/23
+# Date: 9/12/23
 # License: MIT
 # ============================================
 
@@ -53,7 +53,7 @@ def download_manifest(repo, slug):
         'User-Agent': 'BulkModDownloader/1.0.0'
         }
     elif repo == "CurseForge":
-        fileUrl = "https://api.curse.tools/v1/cf/mods/" + slug + "/files"
+        fileUrl = "https://api.curse.tools/v1/cf/mods/" + slug + "/files?pageSize=10000"
         baseUrl = "https://api.curse.tools/v1/cf/mods/" + slug
         headers = {
         }

@@ -56,6 +56,7 @@ def download_manifest(repo, slug):
         fileUrl = "https://api.curse.tools/v1/cf/mods/" + slug + "/files?pageSize=10000"
         baseUrl = "https://api.curse.tools/v1/cf/mods/" + slug
         headers = {
+        'User-Agent': 'BulkModDownloader/1.0.0'
         }
     elif repo == "Modrinth":
         fileUrl = "https://api.modrinth.com/v2/project/" + slug + "/version"

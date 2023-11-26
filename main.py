@@ -119,6 +119,7 @@ def download_manifest(repo, slug):
             modName = modName.replace(")", "")
             modName = modName.replace(":", "")
             modName = modName.replace(";", "")
+            modName = modName.rstrip()
             if not os.path.isdir("files/" + modName):
                 os.makedirs("files/" + modName)
             for versionBase in modLink["sortableGameVersions"]:
@@ -142,6 +143,7 @@ def download_manifest(repo, slug):
             modName = modName.replace(")", "")
             modName = modName.replace(":", "")
             modName = modName.replace(";", "")
+            modName = modName.rstrip()
             mod_content = requests.get(modLink["downloadUrl"]).content
             if not os.path.isdir("files/" + modName):
                 os.makedirs("files/" + modName)
@@ -169,6 +171,7 @@ def download_manifest(repo, slug):
                     modName = modName.replace(")", "")
                     modName = modName.replace(":", "")
                     modName = modName.replace(";", "")
+                    modName = modName.rstrip()
                     if not os.path.isdir("files/" + modName):
                         os.makedirs("files/" + modName)
                     for versionBase in fileJson[number]["game_versions"]:

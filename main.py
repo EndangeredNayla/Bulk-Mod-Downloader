@@ -112,15 +112,22 @@ def download_manifest(repo, slug):
     elif repo == "CurseForge":
         for modLink in fileJson["data"]:
             mod_content = requests.get(modLink["downloadUrl"]).content
-            if not os.path.isdir("files/" + baseJson['data']['name']):
-                os.makedirs("files/" + baseJson['data']['name'])
+            modName = baseJson['data']['name']
+            modName = modName.replace("[", "")
+            modName = modName.replace("]", "")
+            modName = modName.replace("(", "")
+            modName = modName.replace(")", "")
+            modName = modName.replace(":", "")
+            modName = modName.replace(";", "")
+            if not os.path.isdir("files/" + modName):
+                os.makedirs("files/" + modName)
             for versionBase in modLink["sortableGameVersions"]:
-                if not os.path.isdir("files/" + baseJson['data']['name'] + "/" + versionBase['gameVersion']):
-                    os.makedirs("files/" + baseJson['data']['name'] + "/" + versionBase['gameVersion'])
-                with open("files/" + baseJson['data']['name'] + "/" + versionBase['gameVersion'] + "/" + modLink['fileName'], 'wb') as f:
+                if not os.path.isdir("files/" + modName + "/" + versionBase['gameVersion']):
+                    os.makedirs("files/" + modName + "/" + versionBase['gameVersion'])
+                with open("files/" + modName + "/" + versionBase['gameVersion'] + "/" + modLink['fileName'], 'wb') as f:
                     f.write(mod_content)
                     try:
-                        os.remove("files/" + baseJson['data']['name'] + "/" + modLink['fileName'])
+                        os.remove("files/" + modName + "/" + modLink['fileName'])
                     except:
                         pass
                     print('Downloaded: {}!'.format(modLink['fileName']))
@@ -128,15 +135,22 @@ def download_manifest(repo, slug):
     
     elif repo == "LegacyBukkit":
         for modLink in fileJson:
+            modName = baseJson['data']['name']
+            modName = modName.replace("[", "")
+            modName = modName.replace("]", "")
+            modName = modName.replace("(", "")
+            modName = modName.replace(")", "")
+            modName = modName.replace(":", "")
+            modName = modName.replace(";", "")
             mod_content = requests.get(modLink["downloadUrl"]).content
-            if not os.path.isdir("files/" + baseJson['data']['name']):
-                os.makedirs("files/" + baseJson['data']['name'])
-            if not os.path.isdir("files/" + baseJson['data']['name'] + "/" + modLink["gameVersion"]):
-                os.makedirs("files/" + baseJson['data']['name'] + "/" + modLink["gameVersion"])
-            with open("files/" + baseJson['data']['name'] + "/" + modLink["gameVersion"] + "/" + modLink['fileName'], 'wb') as f:
+            if not os.path.isdir("files/" + modName):
+                os.makedirs("files/" + modName)
+            if not os.path.isdir("files/" + modName + "/" + modLink["gameVersion"]):
+                os.makedirs("files/" + modName + "/" + modLink["gameVersion"])
+            with open("files/" + modName + "/" + modLink["gameVersion"] + "/" + modLink['fileName'], 'wb') as f:
                 f.write(mod_content)
                 try:
-                    os.remove("files/" + baseJson['data']['name'] + "/" + modLink['fileName'])
+                    os.remove("files/" + modName + "/" + modLink['fileName'])
                 except:
                     pass
                 print('Downloaded: {}!'.format(modLink['fileName']))
@@ -148,12 +162,19 @@ def download_manifest(repo, slug):
             for number in range(0,999999):
                 for modLink in fileJson[number]["files"]:
                     mod_content = requests.get(modLink["url"]).content
-                    if not os.path.isdir("files/" + baseJson['title']):
-                        os.makedirs("files/" + baseJson['title'])
+                    modName = baseJson['title']
+                    modName = modName.replace("[", "")
+                    modName = modName.replace("]", "")
+                    modName = modName.replace("(", "")
+                    modName = modName.replace(")", "")
+                    modName = modName.replace(":", "")
+                    modName = modName.replace(";", "")
+                    if not os.path.isdir("files/" + modName):
+                        os.makedirs("files/" + modName)
                     for versionBase in fileJson[number]["game_versions"]:
-                        if not os.path.isdir("files/" + baseJson['title'] + "/" + versionBase):
-                            os.makedirs("files/" + baseJson['title'] + "/" + versionBase)
-                        with open("files/" + baseJson['title'] + "/" + versionBase + "/" + modLink['filename'], 'wb') as f:
+                        if not os.path.isdir("files/" + modName + "/" + versionBase):
+                            os.makedirs("files/" + modName + "/" + versionBase)
+                        with open("files/" + modName + "/" + versionBase + "/" + modLink['filename'], 'wb') as f:
                             f.write(mod_content)
                             try:
                                 os.remove("files/" + baseJson['title'] + "/" + modLink['filename'])
